@@ -8,8 +8,10 @@ Werkzeug==3.0.1
 
 # TensorFlow dan Keras untuk model CNN
 # Untuk CPU only:
-tensorflow==2.15.0
-keras==2.15.0
+tensorflow==2.21.0
+# Untuk GPU (alternatif):
+# tensorflow-gpu==2.21.0
+tensorflow-model-optimization==0.8.1
 
 # Image Processing
 Pillow==10.1.0
