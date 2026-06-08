@@ -91,6 +91,11 @@ function ImageUpload() {
     setShowSourceOptions(true);
   };
 
+  const handleReplaceImage = () => {
+    setError(null);
+    setShowSourceOptions(true);
+  };
+
   const handleSourceSelect = (source) => {
     setCaptureSource(source);
     setShowSourceOptions(false);
@@ -200,7 +205,7 @@ function ImageUpload() {
                   }}
                   className="px-6 py-2.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-medium"
                 >
-                  Pilih dari Galeri
+                  Ambil Foto Kamera
                 </button>
                 <button
                   onClick={(e) => {
@@ -209,7 +214,7 @@ function ImageUpload() {
                   }}
                   className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
                 >
-                  Ambil Foto Kamera
+                  Ambil dari Galeri
                 </button>
               </div>
             ) : (
@@ -229,6 +234,28 @@ function ImageUpload() {
             <p className="text-sm text-slate-500 mt-3">
               {selectedFile?.name} ({(selectedFile?.size / 1024 / 1024).toFixed(2)} MB)
             </p>
+            {showSourceOptions && (
+              <div className="flex flex-col sm:flex-row justify-center gap-4 mt-4">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSourceSelect('camera');
+                  }}
+                  className="px-6 py-2.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-medium"
+                >
+                  Ambil Foto Kamera
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSourceSelect('gallery');
+                  }}
+                  className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                  Ambil dari Galeri
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -253,7 +280,7 @@ function ImageUpload() {
         <div className="flex flex-wrap justify-center gap-4 mt-6">
           {previewUrl && (
             <button
-              onClick={handleDropZoneClick}
+              onClick={handleReplaceImage}
               className="px-6 py-2.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-medium"
             >
               Ganti Gambar
