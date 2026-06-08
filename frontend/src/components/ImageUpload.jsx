@@ -253,16 +253,16 @@ function ImageUpload() {
                   }}
                   className="px-6 py-2.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-medium"
                 >
-                  Ambil Foto Kamera
+                  Ambil dari Galeri
                 </button>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handleSourceSelect('gallery');
                   }}
-                  className="px-6 py-2.5 bg-[#355872] text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  className="px-6 py-2.5 bg-[#355872] text-white rounded-lg hover:bg-[#7AAACE] transition-colors font-medium"
                 >
-                  Ambil dari Galeri
+                  Ambil Foto Kamera
                 </button>
               </div>
             )}
