@@ -29,9 +29,6 @@ ENV/
 instance/
 .webassets-cache
 
-# Model (hindari upload file besar ke git)
-backend/model/*.h5
-backend/model/*.hdf5
 
 # Uploads (jangan simpan gambar user di git)
 backend/uploads/*.jpg
