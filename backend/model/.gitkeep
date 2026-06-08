@@ -1,0 +1,3 @@
+# Folder untuk menyimpan model .h5
+# Letakkan file final_road_damage_model.h5 di folder ini
+# File .h5 tidak akan di-track oleh git karena sudah ada di .gitignore

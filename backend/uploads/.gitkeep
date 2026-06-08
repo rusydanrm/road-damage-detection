@@ -1,0 +1,2 @@
+# Folder untuk menyimpan gambar yang diupload user
+# File gambar tidak akan di-track oleh git karena sudah ada di .gitignore
