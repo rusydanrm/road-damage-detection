@@ -20,4 +20,4 @@ Pillow==10.1.0
 numpy==1.24.3
 
 # Gunicorn untuk production server (opsional)
-# gunicorn==21.2.0
+gunicorn==26.0.0
