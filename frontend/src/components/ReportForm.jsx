@@ -22,7 +22,7 @@ const EMAILJS_PUBLIC_KEY = 'Hr2hjMs9l5HkMbBUz'; // Ganti dengan Public Key Anda
 
 // Email tujuan laporan (Pemerintah Kota Bogor)
 const EMAIL_TO = 'dpupr@kotabogor.go.id';
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://road-damage-detection-production-682b.up.railway.app';
 
 function ReportForm({ prediction, confidence, status, imageFile, previewUrl }) {
   // State untuk form

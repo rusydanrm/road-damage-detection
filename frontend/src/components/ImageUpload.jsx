@@ -11,7 +11,7 @@ import ReportForm from './ReportForm';
 
 // Konfigurasi API URL
 // Ganti ini jika backend berjalan di URL berbeda
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://road-damage-detection-production-682b.up.railway.app';
 
 function ImageUpload() {
   // State untuk mengelola file dan preview
