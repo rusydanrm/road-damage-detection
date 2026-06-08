@@ -99,8 +99,18 @@ function ImageUpload() {
   const handleSourceSelect = (source) => {
     setCaptureSource(source);
     setShowSourceOptions(false);
+
     if (fileInputRef.current) {
-      fileInputRef.current.click();
+      const input = fileInputRef.current;
+      if (source === 'camera') {
+        input.setAttribute('capture', 'environment');
+      } else {
+        input.removeAttribute('capture');
+      }
+
+      requestAnimationFrame(() => {
+        input.click();
+      });
     }
   };
 
@@ -250,7 +260,7 @@ function ImageUpload() {
                     e.stopPropagation();
                     handleSourceSelect('gallery');
                   }}
-                  className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  className="px-6 py-2.5 bg-[#355872] text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
                 >
                   Ambil dari Galeri
                 </button>
@@ -264,7 +274,6 @@ function ImageUpload() {
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          capture={captureSource === 'camera' ? 'environment' : undefined}
           onChange={handleFileSelect}
           className="hidden"
         />
