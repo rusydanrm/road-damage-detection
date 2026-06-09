@@ -296,48 +296,6 @@ function ReportForm({ prediction, confidence, status, imageFile, previewUrl }) {
           />
         </div>
 
-        {/* Ringkasan Hasil Deteksi (Read-only) */}
-        <div className="bg-slate-50 rounded-lg p-4">
-          <p className="text-sm font-medium text-slate-700 mb-2">
-            Ringkasan Hasil AI Detection:
-          </p>
-          <div className="grid grid-cols-3 gap-2 text-center text-sm">
-            <div>
-              <span className="text-slate-500">Prediction</span>
-              <p className="font-semibold text-slate-800">{prediction}</p>
-            </div>
-            <div>
-              <span className="text-slate-500">Confidence</span>
-              <p className="font-semibold text-slate-800">{confidence}%</p>
-            </div>
-            <div>
-              <span className="text-slate-500">Status</span>
-              <p className="font-semibold text-slate-800">{status}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Info attachment */}
-        {imageFile && (
-          <div className="flex flex-col gap-2 text-sm text-slate-600 bg-blue-50 p-3 rounded-lg">
-            <div className="flex items-center gap-2">
-              <span>📎</span>
-              <span>
-                Foto akan diunggah ke backend dan dikirim sebagai attachment: <strong>{imageFile.name}</strong>
-              </span>
-            </div>
-            {uploadingImage && (
-              <div className="text-xs text-slate-500">Sedang mengunggah gambar ke backend...</div>
-            )}
-            {uploadError && (
-              <div className="text-xs text-red-600">{uploadError}</div>
-            )}
-            {uploadedImageUrl && (
-              <div className="text-xs text-slate-500">Gambar tersimpan di backend: {uploadedImageUrl}</div>
-            )}
-          </div>
-        )}
-
         {/* Tombol Kirim */}
         <button
           type="submit"

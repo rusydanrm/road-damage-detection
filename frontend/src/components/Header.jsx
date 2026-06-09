@@ -12,13 +12,13 @@ function Header() {
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         {/* Judul Utama */}
         <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
-          Sistem Deteksi Kerusakan Jalan & Trotoar
+          Sistem Pelaporan Kerusakan Jalan Bogor
         </h1>
 
         {/* Deskripsi Singkat */}
         <p className="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed">
-          Sistem untuk mendeteksi kerusakan jalan dan trotoar seperti retakan atau lubang
-          menggunakan Convolutional Neural Network.
+          Website berbasis computer vision untuk membantu masyarakat melaporkan kerusakan jalan
+          dan trotoar di wilayah Kota Bogor dan Kabupaten Bogor secara lebih mudah, cepat, dan terarah.
         </p>
       </div>
     </header>

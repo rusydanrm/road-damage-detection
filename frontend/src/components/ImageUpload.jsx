@@ -25,10 +25,25 @@ function ImageUpload() {
 
   // State untuk memilih sumber gambar saat klik drop zone
   const [showSourceOptions, setShowSourceOptions] = useState(false);
-  const [captureSource, setCaptureSource] = useState('gallery');
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [cameraLoading, setCameraLoading] = useState(false);
+  const [cameraError, setCameraError] = useState(null);
 
   // Ref untuk input file (hidden)
   const fileInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const cameraStreamRef = useRef(null);
+
+  const stopCameraStream = () => {
+    if (cameraStreamRef.current) {
+      cameraStreamRef.current.getTracks().forEach((track) => track.stop());
+      cameraStreamRef.current = null;
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  };
 
   /**
    * Handle saat user memilih file dari file picker
@@ -47,6 +62,7 @@ function ImageUpload() {
     // Reset state
     setResult(null);
     setError(null);
+    setShowSourceOptions(false);
 
     // Validasi tipe file
     const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
@@ -64,6 +80,9 @@ function ImageUpload() {
     setSelectedFile(file);
 
     // Buat URL preview
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
     const fileUrl = URL.createObjectURL(file);
     setPreviewUrl(fileUrl);
   };
@@ -96,22 +115,99 @@ function ImageUpload() {
     setShowSourceOptions(true);
   };
 
-  const handleSourceSelect = (source) => {
-    setCaptureSource(source);
+  const openCamera = async () => {
+    setCameraError(null);
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setError('Browser tidak mendukung akses kamera. Gunakan opsi galeri sebagai gantinya.');
+      return;
+    }
+
+    setCameraLoading(true);
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: 'environment' }
+        },
+        audio: false
+      });
+
+      cameraStreamRef.current = stream;
+      setIsCameraOpen(true);
+
+      requestAnimationFrame(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play().catch(() => {});
+        }
+      });
+    } catch (err) {
+      console.error('Error saat membuka kamera:', err);
+      setCameraError('Tidak bisa membuka kamera. Pastikan izin kamera diberikan dan perangkat memiliki kamera.');
+      stopCameraStream();
+    } finally {
+      setCameraLoading(false);
+    }
+  };
+
+  const handleSourceSelect = async (source) => {
     setShowSourceOptions(false);
+
+    if (source === 'camera') {
+      await openCamera();
+      return;
+    }
 
     if (fileInputRef.current) {
       const input = fileInputRef.current;
-      if (source === 'camera') {
-        input.setAttribute('capture', 'environment');
-      } else {
-        input.removeAttribute('capture');
-      }
-
+      input.removeAttribute('capture');
       requestAnimationFrame(() => {
         input.click();
       });
     }
+  };
+
+  const handleCapturePhoto = () => {
+    const video = videoRef.current;
+
+    if (!video || !video.videoWidth || !video.videoHeight) {
+      setCameraError('Kamera belum siap. Coba tunggu sebentar lalu ambil foto lagi.');
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext('2d');
+    if (!context) {
+      setCameraError('Gagal menyiapkan kanvas untuk mengambil gambar.');
+      return;
+    }
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        setCameraError('Gagal menangkap foto dari kamera.');
+        return;
+      }
+
+      const capturedFile = new File([blob], `camera-capture-${Date.now()}.jpg`, {
+        type: 'image/jpeg'
+      });
+
+      processFile(capturedFile);
+      setIsCameraOpen(false);
+      stopCameraStream();
+    }, 'image/jpeg', 0.95);
+  };
+
+  const closeCamera = () => {
+    setIsCameraOpen(false);
+    setCameraError(null);
+    stopCameraStream();
   };
 
   /**
@@ -161,6 +257,8 @@ function ImageUpload() {
     setResult(null);
     setError(null);
     setLoading(false);
+    setShowSourceOptions(false);
+    closeCamera();
 
     // Reset file input
     if (fileInputRef.current) {
@@ -171,6 +269,7 @@ function ImageUpload() {
   // Cleanup object URL saat unmount
   React.useEffect(() => {
     return () => {
+      stopCameraStream();
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
@@ -277,6 +376,58 @@ function ImageUpload() {
           onChange={handleFileSelect}
           className="hidden"
         />
+
+        {/* Kamera Desktop / Browser */}
+        {isCameraOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-4 py-6">
+            <div className="w-full max-w-3xl rounded-2xl bg-white p-4 shadow-2xl">
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-800">Ambil Foto Kamera</h3>
+                  <p className="text-sm text-slate-500">Izinkan akses kamera lalu ambil foto dari desktop atau ponsel.</p>
+                </div>
+                <button
+                  onClick={closeCamera}
+                  className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200"
+                >
+                  Tutup
+                </button>
+              </div>
+
+              <div className="overflow-hidden rounded-xl bg-black">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="max-h-[60vh] w-full object-cover"
+                />
+              </div>
+
+              {cameraError && (
+                <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                  {cameraError}
+                </div>
+              )}
+
+              <div className="mt-4 flex flex-wrap justify-center gap-3">
+                <button
+                  onClick={handleCapturePhoto}
+                  disabled={cameraLoading}
+                  className="rounded-lg bg-[#355872] px-6 py-2.5 font-medium text-white transition-colors hover:bg-[#7AAACE] disabled:cursor-not-allowed disabled:bg-slate-400"
+                >
+                  {cameraLoading ? 'Membuka Kamera...' : 'Ambil Foto'}
+                </button>
+                <button
+                  onClick={closeCamera}
+                  className="rounded-lg bg-slate-200 px-6 py-2.5 font-medium text-slate-700 transition-colors hover:bg-slate-300"
+                >
+                  Batal
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Error Message */}
         {error && (
